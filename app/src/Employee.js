@@ -1,15 +1,16 @@
-import { currencyFormat } from "./Constants";
+import { currencyFormat, dateFormat } from "./Constants";
 
 const Employee = (props) => {
     const firstName = props.firstName || '';
     const lastName = props.lastName || '';
     const salary = props.salary || 0;
+    const dateOfBirth = props.dateOfBirth || '';
     return (
         <tr>
             <th scope="row">{props.id}</th>
             <td>{lastName}</td>
             <td>{firstName}</td>
-            <td>{props.dateOfBirth}</td>
+            <td>{dateFormat(dateOfBirth)}</td>
             <td>{currencyFormat(salary)}</td>
             <td>{props.dependents?.length || 0}</td>
             <td>
