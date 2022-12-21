@@ -1,4 +1,5 @@
 using Api.DataAccess;
+using Api.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -7,11 +8,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddTransient<EmployeesService>();
 
 //Get connection string from appsettings.json and wire up Db Context
 builder.Services.AddDbContext<BenefitsCalcDbContext>(
     config => config.UseSqlServer(builder.Configuration.GetConnectionString("PctyCalcTestDb"))
     );
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

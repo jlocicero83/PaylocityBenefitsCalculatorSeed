@@ -9,13 +9,12 @@ namespace Api.DataAccess
         {
         }
 
-        public DbSet<Employee> Employees { get; set; }
-        public DbSet<Dependent> Dependents { get; set; }
+        public DbSet<Employee> Employee { get; set; }
+        public DbSet<Dependent> Dependent { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Employee>().HasKey(emp => emp.Id);
-            modelBuilder.Entity<Dependent>().HasKey(dependent => dependent.Id);
+            modelBuilder.Entity<Employee>();
         }
     }
 }
