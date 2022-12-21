@@ -6,6 +6,9 @@ namespace Api.Services
 {
     public class DtoMappingService
     {
+        /*I'm not too familiar with the DTO pattern - I added this service to handle all the mapping needs for models -> dtos. Sending full models to the
+         * client might not be the best solution, but could avoid repetitive code in the backend. 
+         */
         public GetDependentDto MapDependentToDto(Dependent dependent)
         {
             return new GetDependentDto()

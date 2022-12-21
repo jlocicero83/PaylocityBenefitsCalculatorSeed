@@ -17,12 +17,12 @@ namespace Api.Services
             _mapper = mapper;
         }
 
-        public List<GetEmployeeDto> GetAllEmployees()
+        public async Task<List<GetEmployeeDto>> GetAllEmployees()
         {
-            //Performance opt. -- could add server side pagination to handle increasingly large resultsets
+            //Performance opt. -- could add server side pagination to handle increasingly large resultsets. For now just taking the first 25
             List<GetEmployeeDto> results = new List<GetEmployeeDto>();
 
-            var employees = _dbContext.Employee.ToList();
+            var employees = _dbContext.Employee.Take(25).ToList();
             foreach(Employee employee in employees)
             {
                 employee.Dependents = GetDependentsOfEmployee(employee.Id);
