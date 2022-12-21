@@ -1,5 +1,6 @@
 ﻿using Api.DataAccess;
 using Api.Dtos.Employee;
+using Api.Dtos.Dependent;
 using Api.Models;
 
 namespace Api.Services
@@ -7,36 +8,35 @@ namespace Api.Services
     public class EmployeesService
     {
         private BenefitsCalcDbContext _dbContext;
+        private DtoMappingService _mapper;
 
-        //Inject db context through constructor
-        public EmployeesService(BenefitsCalcDbContext dbContext)
+        //Inject dbContext through constructor
+        public EmployeesService(BenefitsCalcDbContext dbContext, DtoMappingService mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
         public List<GetEmployeeDto> GetAllEmployees()
         {
-            //Future Flex/Performance -- add server side pagination to handle increasingly large resultsets
-            List<GetEmployeeDto> employeeDtos = new List<GetEmployeeDto>();
-            
-                var employees = _dbContext.Employee;
+            //Performance opt. -- could add server side pagination to handle increasingly large resultsets
+            List<GetEmployeeDto> results = new List<GetEmployeeDto>();
 
-
-
-            //TODO: Refactor/extract this
-            foreach (Employee employee in employees)
+            var employees = _dbContext.Employee.ToList();
+            foreach(Employee employee in employees)
             {
-                employeeDtos.Add(new GetEmployeeDto()
-                {
-                    Id = employee.Id,
-                    FirstName = employee.FirstName,
-                    LastName = employee.LastName,
-                    Salary = employee.Salary,
-                    DateOfBirth = employee.DateOfBirth,
-
-                });
+                employee.Dependents = GetDependentsOfEmployee(employee.Id);
+                results.Add(_mapper.MapEmployeeToDto(employee));
             }
-            return employeeDtos;
+            return results;
+        }
+
+
+        private List<Dependent> GetDependentsOfEmployee(int relatedEmployeeId)
+        {
+            return _dbContext.Dependent
+                .Where(dep => dep.EmployeeId == relatedEmployeeId)
+                .ToList();
         }
 
          
