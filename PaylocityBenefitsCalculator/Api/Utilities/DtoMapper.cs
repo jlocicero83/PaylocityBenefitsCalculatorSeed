@@ -84,6 +84,18 @@ namespace Api.Utilities
             return result;
         }
 
+        public static Employee MapDtoToEmployee(UpdateEmployeeDto updateEmployeeDto)
+        {
+            Employee result = new Employee()
+            {
+                FirstName = updateEmployeeDto.FirstName,
+                LastName = updateEmployeeDto.LastName,
+                Salary = updateEmployeeDto.Salary,
+            };
+
+            return result;
+        }
+
         public static Dependent MapDtoToDependent(AddDependentDto addDependentDto)
         {
             return new Dependent()

@@ -103,7 +103,29 @@ namespace Api.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<ApiResponse<GetEmployeeDto>>> UpdateEmployee(int id, UpdateEmployeeDto updatedEmployee)
         {
-            throw new NotImplementedException();
+            var result = new ApiResponse<GetEmployeeDto>();
+            try
+            {
+                var data = await _empService.UpdateEmployee(id, updatedEmployee);
+                if(data is null)
+                {
+                    result.Success = false;
+                    result.Message = "An error occurred when processing your request.";
+                }
+                else
+                {
+                    result.Success = true;
+                    result.Data = data;
+                }
+            }
+            catch(Exception ex)
+            {
+                result.Success = false;
+                result.Error = ex.ToString();
+                result.Message = "An error occurred when processing your request.";
+
+            }
+            return result;
         }
 
         [SwaggerOperation(Summary = "Delete employee")]

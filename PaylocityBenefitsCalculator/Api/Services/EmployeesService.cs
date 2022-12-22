@@ -56,6 +56,27 @@ namespace Api.Services
 
         #endregion
 
+        #region PUT Methods
+
+        public async Task<GetEmployeeDto?> UpdateEmployee(int id, UpdateEmployeeDto updatedEmployee)
+        {
+            var existing = await _dbContext.Employee.SingleOrDefaultAsync(emp => emp.Id == id);
+            if(existing is null) return null;
+
+            else
+            {
+                //update existing record and save changes
+                existing.FirstName = updatedEmployee.FirstName;
+                existing.LastName = updatedEmployee.LastName;
+                existing.Salary = updatedEmployee.Salary;
+                _dbContext.Update(existing);
+                int recordsUpdated = await _dbContext.SaveChangesAsync();
+                return recordsUpdated == 1 ? DtoMapper.MapEmployeeToGetDto(existing) : null;
+            }
+        }
+
+        #endregion
+
         #region POST Methods
         public async Task<AddEmployeeDto?> AddNewEmployee(AddEmployeeDto addEmployeeDto)
         {
@@ -92,6 +113,7 @@ namespace Api.Services
 
         #endregion
 
+        #region DELETE Methods
         public async Task<GetEmployeeDto?> DeleteEmployee(int id)
         {
             var employee = await _dbContext.Employee.FindAsync(id);
@@ -107,6 +129,8 @@ namespace Api.Services
             int recordsRemoved = _dbContext.SaveChanges();
             return recordsRemoved == 0 ? null : DtoMapper.MapEmployeeToGetDto(employee);
 
-        } 
+        }
+
+        #endregion
     }
 }
