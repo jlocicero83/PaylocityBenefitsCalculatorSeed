@@ -21,7 +21,28 @@ namespace Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ApiResponse<GetEmployeeDto>>> Get(int id)
         {
-            throw new NotImplementedException();
+            var result = new ApiResponse<GetEmployeeDto>();
+            try
+            {
+               var data = await _empService.GetEmployeeById(id);
+               if(data is null)
+                {
+                    result.Success = false;
+                    result.Message = "No data was returned.";
+                }
+                else
+                {
+                    result.Data = data; 
+                    result.Success = true;
+                }
+            }
+            catch(Exception ex)
+            {
+                result.Success = false;
+                result.Error = ex.ToString();
+                result.Message = ex.Message;
+            }
+            return result;
         }
 
         [SwaggerOperation(Summary = "Get all employees")]
@@ -33,16 +54,21 @@ namespace Api.Controllers
             {
                 List<GetEmployeeDto> data = await _empService.GetAllEmployees();
                 result.Data = data;
-                result.Success = data.Any();
+                if (data.Any()) result.Success = true;
+                else
+                {
+                    result.Success = false;
+                    result.Message = "No data was returned.";
+                }
             }
             catch(Exception ex)
             {
+                result.Success = false;
                 result.Error = ex.ToString();
                 result.Message = ex.Message;
             }
             return result;
             //task: use a more realistic production approach: created a SQL db for test data.
-            
         }
 
         [SwaggerOperation(Summary = "Add employee")]
