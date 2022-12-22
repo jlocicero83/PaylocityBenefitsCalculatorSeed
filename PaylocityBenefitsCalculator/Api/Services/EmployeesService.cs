@@ -15,6 +15,8 @@ namespace Api.Services
             _dbContext = dbContext;
         }
 
+        #region GET Methods
+
         public async Task<List<GetEmployeeDto>> GetAllEmployees()
         {
             //Performance opt. -- could add server side pagination to handle increasingly large resultsets. 
@@ -42,6 +44,8 @@ namespace Api.Services
             }
         }
 
+       
+
 
         private async Task<List<Dependent>> GetDependentsOfEmployee(int relatedEmployeeId)
         {
@@ -50,6 +54,8 @@ namespace Api.Services
                 .ToListAsync();
         }
 
-         
+        #endregion
+
+
     }
 }

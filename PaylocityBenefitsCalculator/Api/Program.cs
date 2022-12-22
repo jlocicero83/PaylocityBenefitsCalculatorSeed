@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddTransient<EmployeesService>();
-
+builder.Services.AddTransient<DependentsService>();
 
 //Get connection string from appsettings.json and wire up Db Context
 builder.Services.AddDbContext<BenefitsCalcDbContext>(
