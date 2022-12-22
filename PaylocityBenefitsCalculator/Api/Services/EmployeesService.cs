@@ -91,5 +91,22 @@ namespace Api.Services
         }
 
         #endregion
+
+        public async Task<GetEmployeeDto?> DeleteEmployee(int id)
+        {
+            var employee = await _dbContext.Employee.FindAsync(id);
+            if (employee is null) return null;
+
+            //first remove any dependent records associated with that employee
+            List<Dependent> dependents = await _dbContext.Dependent.Where(dep => dep.EmployeeId == id).ToListAsync();
+            _dbContext.Dependent.RemoveRange(dependents);
+            _dbContext.SaveChanges();
+
+            //then delete the employee record
+            _dbContext.Employee.Remove(employee);
+            int recordsRemoved = _dbContext.SaveChanges();
+            return recordsRemoved == 0 ? null : DtoMapper.MapEmployeeToGetDto(employee);
+
+        } 
     }
 }

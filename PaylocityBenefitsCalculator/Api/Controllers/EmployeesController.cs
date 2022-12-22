@@ -108,9 +108,30 @@ namespace Api.Controllers
 
         [SwaggerOperation(Summary = "Delete employee")]
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ApiResponse<List<GetEmployeeDto>>>> DeleteEmployee(int id)
+        public async Task<ActionResult<ApiResponse<GetEmployeeDto>>> DeleteEmployee(int id)
         {
-            throw new NotImplementedException();
+            var result = new ApiResponse<GetEmployeeDto>();
+            try
+            {
+                var deletedEmployee = await _empService.DeleteEmployee(id);
+                if(deletedEmployee is null)
+                {
+                    result.Success = false;
+                    result.Message = "There was an error processing your request.";
+                }
+                else
+                {
+                    result.Data = deletedEmployee;
+                    result.Success = true;
+                }
+            }
+            catch(Exception ex)
+            {
+                result.Success = false;
+                result.Message = "There was an error processing your request.";
+                result.Error = ex.ToString();
+            }
+            return result;
         }
     }
 }
