@@ -28,7 +28,7 @@ namespace Api.Services
                 //This could maybe be optimized - perhaps only showing dependents on an employee-detail screen of sorts? Could avoid the expensive op.
                 //of getting every dependent for every employee. Instead get the dependents for a specific employee on a need-to basis.              
                 employee.Dependents = await GetDependentsOfEmployee(employee.Id);
-                results.Add(DtoMapper.MapEmployeeToDto(employee));
+                results.Add(DtoMapper.MapEmployeeToGetDto(employee));
             }
             return results;
         }
@@ -40,7 +40,7 @@ namespace Api.Services
             else
             {
                 employee.Dependents = await GetDependentsOfEmployee(employee.Id);
-                return DtoMapper.MapEmployeeToDto(employee);
+                return DtoMapper.MapEmployeeToGetDto(employee);
             }
         }
 
@@ -56,6 +56,40 @@ namespace Api.Services
 
         #endregion
 
+        #region POST Methods
+        public async Task<AddEmployeeDto?> AddNewEmployee(AddEmployeeDto addEmployeeDto)
+        {
+            //first, add the employee to Employee table
+            Employee employee = new Employee()
+            {
+                FirstName = addEmployeeDto.FirstName,
+                LastName = addEmployeeDto.LastName,
+                Salary = addEmployeeDto.Salary,
+                DateOfBirth = addEmployeeDto.DateOfBirth
+            };
+            await _dbContext.Employee.AddAsync(employee);
+            int recordsAdded = _dbContext.SaveChanges();
 
+
+            if (recordsAdded == 0) return null;
+            
+            //check if there are any dependents to add
+            else if (addEmployeeDto.Dependents is null || addEmployeeDto.Dependents.Count == 0) return DtoMapper.MapEmployeeToAddDto(employee);
+            else
+            {
+                //EXTRACT THIS - add the dependents to the db
+                List<Dependent> dependents = new List<Dependent>();
+                foreach(var dep in addEmployeeDto.Dependents)
+                {
+                    dep.EmployeeId = employee.Id;
+                    dependents.Add(DtoMapper.MapDtoToDependent(dep));
+                }
+                await _dbContext.AddRangeAsync(dependents);
+                _dbContext.SaveChanges();
+            }
+            return DtoMapper.MapEmployeeToAddDto(employee);
+        }
+
+        #endregion
     }
 }

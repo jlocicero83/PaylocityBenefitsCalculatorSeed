@@ -73,9 +73,30 @@ namespace Api.Controllers
 
         [SwaggerOperation(Summary = "Add employee")]
         [HttpPost]
-        public async Task<ActionResult<ApiResponse<List<AddEmployeeDto>>>> AddEmployee(AddEmployeeDto newEmployee)
+        public async Task<ActionResult<ApiResponse<AddEmployeeDto>>> AddEmployee(AddEmployeeDto newEmployee)
         { 
-            throw new NotImplementedException();
+            var result = new ApiResponse<AddEmployeeDto>();
+            try
+            {
+                var data = await _empService.AddNewEmployee(newEmployee);
+                if (data is null)
+                {
+                    result.Success = false;
+                    result.Message = "There was an error when completing your request.";
+                }
+                else
+                {
+                    result.Data = data;
+                    result.Success = true;
+                }
+            }
+            catch(Exception ex)
+            {
+                result.Success = false;
+                result.Error=ex.ToString();
+                result.Message = ex.Message;
+            }
+            return result;
         }
 
         [SwaggerOperation(Summary = "Update employee")]

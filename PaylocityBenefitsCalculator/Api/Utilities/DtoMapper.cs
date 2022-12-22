@@ -21,7 +21,7 @@ namespace Api.Utilities
             };
         }
 
-        public static GetEmployeeDto MapEmployeeToDto(Employee employee)
+        public static GetEmployeeDto MapEmployeeToGetDto(Employee employee)
         {
             GetEmployeeDto employeeDto = new GetEmployeeDto()
             {
@@ -37,6 +37,63 @@ namespace Api.Utilities
             }
             return employeeDto;
 
+        }
+
+        public static AddEmployeeDto MapEmployeeToAddDto(Employee employee)
+        {
+            var result = new AddEmployeeDto()
+            {
+                FirstName = employee.FirstName,
+                LastName = employee.LastName,
+                Salary = employee.Salary,
+                DateOfBirth = employee.DateOfBirth
+            };
+            if (employee.Dependents.Count == 0) return result;
+            else
+            {
+                result.Dependents = new List<AddDependentDto>();
+                foreach (Dependent dependent in employee.Dependents)
+                {
+                    result.Dependents.Add(MapDependentToAddDto(dependent));
+                }
+            }
+            return result;
+        }
+
+        public static AddDependentDto MapDependentToAddDto(Dependent dependent)
+        {
+            return new AddDependentDto()
+            {
+                FirstName = dependent.FirstName,
+                LastName = dependent.LastName,
+                DateOfBirth = dependent.DateOfBirth,
+                Relationship = dependent.Relationship
+            };
+        }
+
+        public static Employee MapDtoToEmployee(AddEmployeeDto addEmployeeDto)
+        {
+            Employee result = new Employee()
+            {
+                FirstName = addEmployeeDto.FirstName,
+                LastName = addEmployeeDto.LastName,
+                Salary = addEmployeeDto.Salary,
+                DateOfBirth = addEmployeeDto.DateOfBirth
+            };
+            
+            return result;
+        }
+
+        public static Dependent MapDtoToDependent(AddDependentDto addDependentDto)
+        {
+            return new Dependent()
+            {
+                FirstName = addDependentDto.FirstName,
+                LastName = addDependentDto.LastName,
+                DateOfBirth = addDependentDto.DateOfBirth,
+                Relationship = addDependentDto.Relationship,
+                EmployeeId = addDependentDto.EmployeeId
+            };
         }
     }
 }

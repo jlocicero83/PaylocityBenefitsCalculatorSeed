@@ -72,7 +72,7 @@ namespace Api.Controllers
 
         [SwaggerOperation(Summary = "Add dependent")]
         [HttpPost]
-        public async Task<ActionResult<ApiResponse<List<AddDependentWithEmployeeIdDto>>>> AddDependent(AddDependentWithEmployeeIdDto newDependent)
+        public async Task<ActionResult<ApiResponse<List<AddDependentDto>>>> AddDependent(AddDependentDto newDependent)
         {
             throw new NotImplementedException();
         }
