@@ -15,6 +15,8 @@ namespace Api.Services
             _dbContext = dbContext;
         }
 
+        #region GET Methods
+
         public async Task<List<GetDependentDto>> GetAllDependents()
         {
             List<GetDependentDto> results = new List<GetDependentDto>();
@@ -36,5 +38,7 @@ namespace Api.Services
                 return DtoMapper.MapDependentToDto(dependent);
             }
         }
+
+        #endregion
     }
 }
