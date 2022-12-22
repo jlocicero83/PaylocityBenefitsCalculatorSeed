@@ -1,42 +1,40 @@
 ﻿using Api.DataAccess;
 using Api.Dtos.Employee;
-using Api.Dtos.Dependent;
 using Api.Models;
+using Microsoft.EntityFrameworkCore;
+using Api.Utilities;
 
 namespace Api.Services
 {
     public class EmployeesService
     {
         private BenefitsCalcDbContext _dbContext;
-        private DtoMappingService _mapper;
-
-        //Inject dbContext through constructor
-        public EmployeesService(BenefitsCalcDbContext dbContext, DtoMappingService mapper)
+        
+        public EmployeesService(BenefitsCalcDbContext dbContext)
         {
             _dbContext = dbContext;
-            _mapper = mapper;
         }
 
         public async Task<List<GetEmployeeDto>> GetAllEmployees()
         {
-            //Performance opt. -- could add server side pagination to handle increasingly large resultsets. For now just taking the first 25
+            //Performance opt. -- could add server side pagination to handle increasingly large resultsets. 
             List<GetEmployeeDto> results = new List<GetEmployeeDto>();
 
-            var employees = _dbContext.Employee.Take(25).ToList();
+            var employees = await _dbContext.Employee.ToListAsync();
             foreach(Employee employee in employees)
             {
-                employee.Dependents = GetDependentsOfEmployee(employee.Id);
-                results.Add(_mapper.MapEmployeeToDto(employee));
+                employee.Dependents = await GetDependentsOfEmployee(employee.Id);
+                results.Add(DtoMapper.MapEmployeeToDto(employee));
             }
             return results;
         }
 
 
-        private List<Dependent> GetDependentsOfEmployee(int relatedEmployeeId)
+        private async Task<List<Dependent>> GetDependentsOfEmployee(int relatedEmployeeId)
         {
-            return _dbContext.Dependent
+            return await _dbContext.Dependent
                 .Where(dep => dep.EmployeeId == relatedEmployeeId)
-                .ToList();
+                .ToListAsync();
         }
 
          

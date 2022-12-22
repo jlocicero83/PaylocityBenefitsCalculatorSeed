@@ -2,14 +2,14 @@
 using Api.Dtos.Employee;
 using Api.Models;
 
-namespace Api.Services
+namespace Api.Utilities
 {
-    public class DtoMappingService
+    public static class DtoMapper
     {
-        /*I'm not too familiar with the DTO pattern - I added this service to handle all the mapping needs for models -> dtos. Sending full models to the
-         * client might not be the best solution, but could avoid repetitive code in the backend. 
+        /*I'm not too familiar with the DTO pattern - I added this util to handle the frequent mapping for models -> dtos. There is an AutoMapper library
+         that could be used in place of this, but for the purposes of this project I decided to implement manually for now. 
          */
-        public GetDependentDto MapDependentToDto(Dependent dependent)
+        public static GetDependentDto MapDependentToDto(Dependent dependent)
         {
             return new GetDependentDto()
             {
@@ -21,7 +21,7 @@ namespace Api.Services
             };
         }
 
-        public GetEmployeeDto MapEmployeeToDto(Employee employee)
+        public static GetEmployeeDto MapEmployeeToDto(Employee employee)
         {
             GetEmployeeDto employeeDto = new GetEmployeeDto()
             {
@@ -31,12 +31,12 @@ namespace Api.Services
                 Salary = employee.Salary,
                 DateOfBirth = employee.DateOfBirth
             };
-            foreach(Dependent dependent in employee.Dependents)
+            foreach (Dependent dependent in employee.Dependents)
             {
                 employeeDto.Dependents.Add(MapDependentToDto(dependent));
             }
             return employeeDto;
-     
+
         }
     }
 }
