@@ -82,11 +82,12 @@ namespace Api.Services
 
         #region POST Methods
 
-        //trying this as a sync method so a more detailed message can be returned in the Api response re: Spouse/Partner limit = 1 using ref.
+        //trying this as a synchronous method so a more detailed message can be returned in the Api response re: Spouse/Partner limit = 1 using ref.
         //There may be a better way...
         public AddDependentDto? AddDependentForEmployee(int employeeId, AddDependentDto addDependentDto, ref ApiResponse<AddDependentDto> response)
         {
             if (employeeId == 0 || addDependentDto is null) return null;
+            addDependentDto.EmployeeId = employeeId;
 
             //if new dependent is spouse/partner, check if employee already has one.
             if(addDependentDto.Relationship == Relationship.Spouse || addDependentDto.Relationship == Relationship.DomesticPartner)
@@ -107,6 +108,8 @@ namespace Api.Services
             {
                 Dependent newDependent = DtoMapper.MapDtoToDependent(addDependentDto);
                 _dbContext.Dependent.Add(newDependent);
+                int addedRecords =_dbContext.SaveChanges();
+                return addedRecords == 0 ? null : addDependentDto;
             }
             return addDependentDto;
 
