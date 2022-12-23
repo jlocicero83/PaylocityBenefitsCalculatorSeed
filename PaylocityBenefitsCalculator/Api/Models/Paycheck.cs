@@ -19,7 +19,7 @@
         public decimal DependentsTotalCost { get { return CalculateDependentsCost((List<Dependent>)_employee.Dependents); } }
 
 
-        //UNCOMMENT FOR TESTING
+        //UNCOMMENT THIS CONSTRUCTOR FOR TESTING
         public Paycheck(decimal monthlyBaseCost = 1000, decimal monthlyChargePerDep = 600, decimal monthlySurchargePerDepOver50 = 200)
         {
             _monthlyBaseCost = monthlyBaseCost;
@@ -36,6 +36,7 @@
             _monthlySurchargePerDepOver50 = monthlySurchargePerDepOverFifty;
         }
 
+        #region Calcuations Methods
         public decimal CalculateGrossPerCheck(decimal salary)
         {
             if (salary < 0) return 0;
@@ -71,5 +72,7 @@
             }
             return sumResult;
         }
+
+        #endregion
     }
 }
