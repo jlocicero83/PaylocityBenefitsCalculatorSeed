@@ -71,6 +71,12 @@ namespace Api.Controllers
             //task: use a more realistic production approach: created a SQL db for test data.
         }
 
+        //Putting this here for now... perhaps would separate benefits/paycheck logic into its own controller/service if more functionality got added
+        //[SwaggerOperation(Summary = "Get sample paycheck for employee by id")]
+        //[HttpGet]
+        //[Route("/paycheck/{id}")]
+        //public async Task<ActionResult<ApiResponse>>
+
         [SwaggerOperation(Summary = "Add employee")]
         [HttpPost]
         public async Task<ActionResult<ApiResponse<AddEmployeeDto>>> AddEmployee(AddEmployeeDto newEmployee)
