@@ -44,9 +44,6 @@ namespace Api.Services
             }
         }
 
-       
-
-
         private async Task<List<Dependent>> GetDependentsOfEmployee(int relatedEmployeeId)
         {
             return await _dbContext.Dependent
@@ -61,7 +58,7 @@ namespace Api.Services
         public async Task<GetEmployeeDto?> UpdateEmployee(int id, UpdateEmployeeDto updatedEmployee)
         {
             var existing = await _dbContext.Employee.SingleOrDefaultAsync(emp => emp.Id == id);
-            if(existing is null) return null;
+            if(existing is null || updatedEmployee is null) return null;
 
             else
             {
@@ -80,14 +77,18 @@ namespace Api.Services
         #region POST Methods
         public async Task<AddEmployeeDto?> AddNewEmployee(AddEmployeeDto addEmployeeDto)
         {
-            //first, add the employee to Employee table
-            Employee employee = new Employee()
-            {
-                FirstName = addEmployeeDto.FirstName,
-                LastName = addEmployeeDto.LastName,
-                Salary = addEmployeeDto.Salary,
-                DateOfBirth = addEmployeeDto.DateOfBirth
-            };
+
+            if (addEmployeeDto is null) return null;
+
+            //check if identical record exists
+            Employee employee = DtoMapper.MapDtoToEmployee(addEmployeeDto);
+            var existed = _dbContext.Employee
+                                    .Where(emp => emp.LastName == employee.LastName
+                                            && emp.DateOfBirth.Equals(employee.DateOfBirth))
+                                    .FirstOrDefault();
+            if (existed is not null) return addEmployeeDto;
+            
+            //if no existing record, add the employee to Employee table
             await _dbContext.Employee.AddAsync(employee);
             int recordsAdded = _dbContext.SaveChanges();
 

@@ -70,25 +70,89 @@ namespace Api.Controllers
             return result;
         }
 
-        [SwaggerOperation(Summary = "Add dependent")]
+        [SwaggerOperation(Summary = "Add dependent for employee")]
         [HttpPost]
-        public async Task<ActionResult<ApiResponse<List<AddDependentDto>>>> AddDependent(AddDependentDto newDependent)
+        public async Task<ActionResult<ApiResponse<AddDependentDto>>> AddDependent(int relatedEmployeeId, AddDependentDto newDependent)
         {
-            throw new NotImplementedException();
+            var result = new ApiResponse<AddDependentDto>();
+            try
+            {
+                var data = _depService.AddDependentForEmployee(relatedEmployeeId, newDependent, ref result);
+                if (data is null)
+                {
+                    result.Success = false;
+                }
+                else
+                {
+                    result.Success = true;
+                    result.Data = data;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Error = ex.ToString();
+                result.Message = "An error occurred when processing your request.";
+
+            }
+            return result;
         }
 
         [SwaggerOperation(Summary = "Update dependent")]
         [HttpPut("{id}")]
         public async Task<ActionResult<ApiResponse<GetDependentDto>>> UpdateDependent(int id, UpdateDependentDto updatedDependent)
         {
-            throw new NotImplementedException();
+            var result = new ApiResponse<GetDependentDto>();
+            try
+            {
+                var data = await _depService.UpdateDependent(id, updatedDependent);
+                if (data is null)
+                {
+                    result.Success = false;
+                    result.Message = "An error occurred when processing your request.";
+                }
+                else
+                {
+                    result.Success = true;
+                    result.Data = data;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Error = ex.ToString();
+                result.Message = "An error occurred when processing your request.";
+
+            }
+            return result;
         }
 
         [SwaggerOperation(Summary = "Delete dependent")]
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ApiResponse<List<GetDependentDto>>>> DeleteDependent(int id)
+        public async Task<ActionResult<ApiResponse<GetDependentDto>>> DeleteDependent(int id)
         {
-            throw new NotImplementedException();
+            var result = new ApiResponse<GetDependentDto>();
+            try
+            {
+                var deletedDependent = await _depService.DeleteDependent(id);
+                if (deletedDependent is null)
+                {
+                    result.Success = false;
+                    result.Message = "There was an error processing your request.";
+                }
+                else
+                {
+                    result.Data = deletedDependent;
+                    result.Success = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                result.Success = false;
+                result.Message = "There was an error processing your request.";
+                result.Error = ex.ToString();
+            }
+            return result;
         }
     }
 }
