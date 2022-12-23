@@ -9,17 +9,17 @@
         private decimal _monthlyBaseCost;
         private decimal _monthlyChargePerDep;
 
-        //based on prompt's phrasing "over 50", i'm using > 50 not inclusive. Would clarify this
-        //in real-world situation.
+        //based on prompt's phrasing "over 50" i'm using > 50 not inclusive. Would clarify this
+        //in real-world situation
         private decimal _monthlySurchargePerDepOver50;
         
   
         public decimal GrossPay { get { return CalculateGrossPerCheck(_employee.Salary); } }
         public decimal BaseCost { get { return CalculateBaseCostPerCheck(_monthlyBaseCost); } }
-        public decimal DependentsTotalCost { get { return CalculateDependentsCost((List<Dependent>)_employee.Dependents); } }
+        public decimal DependentsTotalCost { get { return CalculateDependentsCostPerCheck((List<Dependent>)_employee.Dependents); } }
+        public decimal Over80kSurcharge { get { return CalculateSurchargeSalaryOver80K(_employee.Salary); } }
 
-
-        //UNCOMMENT THIS CONSTRUCTOR FOR TESTING
+        //UNCOMMENT THIS CONSTRUCTOR FOR TESTING. For in-app purposes, employee will be needed to initialize paycheck.
         public Paycheck(decimal monthlyBaseCost = 1000, decimal monthlyChargePerDep = 600, decimal monthlySurchargePerDepOver50 = 200)
         {
             _monthlyBaseCost = monthlyBaseCost;
@@ -36,7 +36,7 @@
             _monthlySurchargePerDepOver50 = monthlySurchargePerDepOverFifty;
         }
 
-        #region Calcuations Methods
+        #region Calcuation Methods
         public decimal CalculateGrossPerCheck(decimal salary)
         {
             if (salary < 0) return 0;
@@ -49,7 +49,7 @@
             return Math.Round(result, 2);
         }
 
-        public decimal CalculateDependentsCost(List<Dependent> dependents)
+        public decimal CalculateDependentsCostPerCheck(List<Dependent> dependents)
         {
             if (dependents.Count == 0) return 0;
 
@@ -71,6 +71,11 @@
                 
             }
             return sumResult;
+        }
+
+        public decimal CalculateSurchargeSalaryOver80K(decimal salary)
+        {
+            return salary <= 80000.00M ? 0 : Math.Round((salary * 0.02M) / 26, 2);
         }
 
         #endregion

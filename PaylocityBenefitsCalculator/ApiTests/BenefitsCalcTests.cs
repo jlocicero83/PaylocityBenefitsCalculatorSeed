@@ -43,6 +43,23 @@ namespace ApiTests
         }
 
         [Theory]
+        [InlineData(79999.99, 0)]
+        [InlineData(80000.00, 0)]
+        [InlineData(80000.01, 61.54)]
+        [InlineData(100000.00, 76.92)]
+        public void Salary_Over_80K_Should_Incur_2percent_Cost_DivBy_26(decimal salary, decimal expected)
+        {
+            //Arrange
+            Paycheck paycheck = new Paycheck(new Employee() { Salary = salary });
+
+            //Act
+            decimal actual = paycheck.CalculateSurchargeSalaryOver80K(salary);
+
+            //Assert
+            Assert.Equal(expected, actual);
+        }
+
+        [Theory]
         [MemberData(nameof(DependentsChargeTestData))]
         public void Cost_For_Dependents_Should_Consider_Age(List<Dependent> dependents, decimal expected)
         {
@@ -51,13 +68,14 @@ namespace ApiTests
 
 
             //Act
-            decimal actual = paycheck.CalculateDependentsCost(dependents);
+            decimal actual = paycheck.CalculateDependentsCostPerCheck(dependents);
 
             //Assert
             Assert.Equal(expected, actual);
         }
 
-        //Test Dependents Data - xUnit is new for me, so there may be (hopefully) a more elegant way of writing this
+        //Test Dependents Data - xUnit is new for me, so there may be a more elegant way of writing this that I didn't see
+        //in my research
         public static IEnumerable<object[]> DependentsChargeTestData =>
             new List<object[]>
             {
