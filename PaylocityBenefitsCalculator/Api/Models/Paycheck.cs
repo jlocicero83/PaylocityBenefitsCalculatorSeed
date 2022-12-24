@@ -2,7 +2,7 @@
 {
     public class Paycheck
     {
-        private Employee _employee;
+        public readonly Employee Employee;
 
         //for flexibility, set defaults but allow fees to be set through constructer if necessary?
         //could be a UI feature for admins to be able to adjust benefits fees.
@@ -14,11 +14,16 @@
         private decimal _monthlySurchargePerDepOver50;
         
   
-        public decimal GrossPay { get { return CalculateGrossPerCheck(_employee.Salary); } }
-        public decimal BaseCost { get { return CalculateBaseCostPerCheck(_monthlyBaseCost); } }
-        public decimal DependentsTotalCost { get { return CalculateDependentsCostPerCheck((List<Dependent>)_employee.Dependents); } }
-        public decimal Over80kSurcharge { get { return CalculateSurchargeSalaryOver80K(_employee.Salary); } }
+        public decimal GrossPay { get { return CalculateGrossPerCheck(Employee.Salary); } }
 
+        //Deductions per paycheck
+        public decimal BaseCost { get { return CalculateBaseCostPerCheck(_monthlyBaseCost); } }
+        public decimal DependentsTotalCost { get { return CalculateDependentsCostPerCheck((List<Dependent>)Employee.Dependents); } }
+        public decimal Over80kSurcharge { get { return CalculateSurchargeSalaryOver80K(Employee.Salary); } }
+        public decimal TotalDeductions { get { return BaseCost + DependentsTotalCost + Over80kSurcharge; } }
+        public decimal NetPay { get { return GrossPay - TotalDeductions; } }
+
+        #region Constructors
         //UNCOMMENT THIS CONSTRUCTOR FOR TESTING. For in-app purposes, employee will be needed to initialize paycheck.
         public Paycheck(decimal monthlyBaseCost = 1000, decimal monthlyChargePerDep = 600, decimal monthlySurchargePerDepOver50 = 200)
         {
@@ -30,11 +35,12 @@
         public Paycheck(Employee employee, decimal monthlyBaseCost = 1000, decimal monthlyChargePerDep = 600,
                         decimal monthlySurchargePerDepOverFifty = 200)
         {
-            _employee = employee;
+            Employee = employee;
             _monthlyBaseCost = monthlyBaseCost;
             _monthlyChargePerDep = monthlyChargePerDep;
             _monthlySurchargePerDepOver50 = monthlySurchargePerDepOverFifty;
         }
+        #endregion
 
         #region Calcuation Methods
         public decimal CalculateGrossPerCheck(decimal salary)

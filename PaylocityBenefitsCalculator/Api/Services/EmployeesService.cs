@@ -3,6 +3,7 @@ using Api.Dtos.Employee;
 using Api.Models;
 using Microsoft.EntityFrameworkCore;
 using Api.Utilities;
+using Api.Dtos.Paycheck;
 
 namespace Api.Services
 {
@@ -35,12 +36,29 @@ namespace Api.Services
 
         public async Task<GetEmployeeDto?> GetEmployeeById(int id)
         {
+         //TODO: DRY - extract this later----------------------------------------------------------------
             var employee = await _dbContext.Employee.SingleOrDefaultAsync(emp => emp.Id == id);
             if (employee is null) return null;
             else
             {
                 employee.Dependents = await GetDependentsOfEmployee(employee.Id);
+         //----------------------------------------------------------------------------------------------
                 return DtoMapper.MapEmployeeToGetDto(employee);
+            }
+        }
+
+        public async Task<GetEmployeesPaycheckDto?> GetEmployeesPaycheck(int id)
+        {
+
+         //TODO: DRY - extract this later----------------------------------------------------------------
+            var employee = await _dbContext.Employee.SingleOrDefaultAsync(emp => emp.Id == id);
+            if (employee is null) return null;
+            else
+            {
+                employee.Dependents = await GetDependentsOfEmployee(employee.Id);
+         //----------------------------------------------------------------------------------------------
+                Paycheck paycheck = new Paycheck(employee);
+                return DtoMapper.MapPaycheckToDto(paycheck);
             }
         }
 
@@ -50,6 +68,7 @@ namespace Api.Services
                 .Where(dep => dep.EmployeeId == relatedEmployeeId)
                 .ToListAsync();
         }
+
 
         #endregion
 

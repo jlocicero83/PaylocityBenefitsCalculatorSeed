@@ -1,5 +1,6 @@
 ﻿using Api.Dtos.Dependent;
 using Api.Dtos.Employee;
+using Api.Dtos.Paycheck;
 using Api.Models;
 
 namespace Api.Utilities
@@ -58,6 +59,21 @@ namespace Api.Utilities
                 }
             }
             return result;
+        }
+
+        public static GetEmployeesPaycheckDto? MapPaycheckToDto(Paycheck paycheck)
+        {
+            return new GetEmployeesPaycheckDto()
+            {
+                EmployeeId = paycheck.Employee.Id,
+                Salary = paycheck.Employee.Salary,
+                GrossPay = paycheck.GrossPay,
+                BaseCost = paycheck.BaseCost,
+                DependentsTotalCost = paycheck.DependentsTotalCost,
+                Over80kSurcharge = paycheck.Over80kSurcharge,
+                TotalDeductions = paycheck.TotalDeductions,
+                NetPay = paycheck.NetPay
+            };
         }
 
         public static AddDependentDto MapDependentToAddDto(Dependent dependent)

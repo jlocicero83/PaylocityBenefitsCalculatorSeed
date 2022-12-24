@@ -1,5 +1,6 @@
 ﻿using Api.Dtos.Dependent;
 using Api.Dtos.Employee;
+using Api.Dtos.Paycheck;
 using Api.Models;
 using Api.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -72,10 +73,34 @@ namespace Api.Controllers
         }
 
         //Putting this here for now... perhaps would separate benefits/paycheck logic into its own controller/service if more functionality got added
-        //[SwaggerOperation(Summary = "Get sample paycheck for employee by id")]
-        //[HttpGet]
-        //[Route("/paycheck/{id}")]
-        //public async Task<ActionResult<ApiResponse>>
+        [SwaggerOperation(Summary = "Get paycheck for employee by id")]
+        [HttpGet]
+        [Route("/paycheck/{id}")]
+        public async Task<ActionResult<ApiResponse<GetEmployeesPaycheckDto>>> GetEmployeesPaycheck(int id)
+        {
+            var result = new ApiResponse<GetEmployeesPaycheckDto>();
+            try
+            {
+                var data = await _empService.GetEmployeesPaycheck(id);
+                if (data is null)
+                {
+                    result.Success = false;
+                    result.Message = "No data was returned";
+                }
+                else
+                {
+                    result.Success = true;
+                    result.Data = data;
+                }
+            }
+            catch(Exception ex)
+            {
+                result.Success = false;
+                result.Error = ex.ToString();
+                result.Message = ex.Message;
+            }
+            return result;
+        }
 
         [SwaggerOperation(Summary = "Add employee")]
         [HttpPost]
