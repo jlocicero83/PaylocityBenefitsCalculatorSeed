@@ -6,14 +6,14 @@ Drop Database if exists PctyBenefitsCalc_JL
 Create Database PctyBenefitsCalc_JL
 GO
 
-use PaylocityBenefitsCalc_JL
+use PctyBenefitsCalc_JL
 GO
 
 create table Employee (
 Id int identity primary key,
 FirstName nvarchar(50),
 LastName nvarchar(50),
-Salary decimal,
+Salary money,
 DateOfBirth date,
 )
 
