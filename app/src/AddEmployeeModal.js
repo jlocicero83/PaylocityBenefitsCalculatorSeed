@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { baseUrl } from "./Constants";
 
 const AddEmployeeModal = (props) => { 
     const [inputs, setInputs] = useState({});
@@ -13,6 +14,8 @@ const AddEmployeeModal = (props) => {
         event.preventDefault();
         
     }
+
+   //use effect?
 
     return (
         <div className="modal fade" id="add-employee-modal" tabIndex="-1" aria-labelledby="add-employee-modal-label" aria-hidden="true">
