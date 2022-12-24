@@ -5,6 +5,7 @@ import AddEmployeeModal from './AddEmployeeModal';
 
 const EmployeeListing = () => {
     const [employees, setEmployees] = useState([]);
+    // eslint-disable-next-line no-unused-vars
     const [error, setError] = useState(null);
 
     useEffect(() => {

@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { baseUrl } from "./Constants";
 
 const AddEmployeeModal = (props) => { 
     const [inputs, setInputs] = useState({});
+    //const [error, setError] = useState(null);
 
     const handleChange = (event) => {
         const name = event.target.name;
@@ -12,10 +13,24 @@ const AddEmployeeModal = (props) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        
+        postEmployee();
+        alert('ALERT');
     }
 
-   //use effect?
+    async function postEmployee() {
+        // POST request using fetch with async/await
+        const request = {
+            method: 'POST',    
+            headers: {'Content-Type': 'applications/json'},        
+            body: JSON.stringify(inputs)
+        };
+        const response = await fetch(`${baseUrl}/api/v1/Employees`, request);
+        const data = await response.json();
+        console.log(data)
+        //this.setState({ postId: data.id });
+    }
+
+    
 
     return (
         <div className="modal fade" id="add-employee-modal" tabIndex="-1" aria-labelledby="add-employee-modal-label" aria-hidden="true">
