@@ -5,6 +5,18 @@ const AddEmployeeModal = (props) => {
     const [inputs, setInputs] = useState({});
     //const [error, setError] = useState(null);
 
+//encountering some strange cors errors. Been researching some fixes re: headers but nothing has worked yet. 
+async function addEmployee(url, newEmployee) {
+    const response = await fetch(url, {
+      method: 'POST', 
+      headers: {
+        "Content-type": "application/json; charset=UTF-8"
+      },
+    //   body: JSON.stringify(newEmployee) 
+    });
+    return await response.json(); 
+  }
+
     const handleChange = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -13,22 +25,16 @@ const AddEmployeeModal = (props) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        postEmployee();
-        alert('ALERT');
+        addEmployee(`${baseUrl}/api/v1/employees`, inputs)
+            .then((response) => { console.log(response); }) // JSON from `response.json()` call
+            .catch((error) => { 
+                console.error(error); 
+                alert(error);
+            });
+       
     }
 
-    async function postEmployee() {
-        // POST request using fetch with async/await
-        const request = {
-            method: 'POST',    
-            headers: {'Content-Type': 'applications/json'},        
-            body: JSON.stringify(inputs)
-        };
-        const response = await fetch(`${baseUrl}/api/v1/Employees`, request);
-        const data = await response.json();
-        console.log(data)
-        //this.setState({ postId: data.id });
-    }
+
 
     
 
