@@ -5,14 +5,16 @@ const AddEmployeeModal = (props) => {
     const [inputs, setInputs] = useState({});
     //const [error, setError] = useState(null);
 
-//encountering some strange cors errors. Been researching some fixes re: headers but nothing has worked yet. 
+//encountering cors errors. Been researching some fixes re: headers but nothing has worked yet. 
+//HeaderDisallowedByPreflightResponse
 async function addEmployee(url, newEmployee) {
     const response = await fetch(url, {
       method: 'POST', 
       headers: {
+        "access-control-allow-origin" : "*",
         "Content-type": "application/json; charset=UTF-8"
       },
-    //   body: JSON.stringify(newEmployee) 
+       body: JSON.stringify(newEmployee) 
     });
     return await response.json(); 
   }
@@ -26,17 +28,13 @@ async function addEmployee(url, newEmployee) {
     const handleSubmit = (event) => {
         event.preventDefault();
         addEmployee(`${baseUrl}/api/v1/employees`, inputs)
-            .then((response) => { console.log(response); }) // JSON from `response.json()` call
+            .then((response) => { console.log(response); }) 
             .catch((error) => { 
                 console.error(error); 
                 alert(error);
             });
        
     }
-
-
-
-    
 
     return (
         <div className="modal fade" id="add-employee-modal" tabIndex="-1" aria-labelledby="add-employee-modal-label" aria-hidden="true">
