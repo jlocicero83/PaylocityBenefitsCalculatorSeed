@@ -33,6 +33,7 @@ async function addEmployee(url, newEmployee) {
                 if(response.success){
                     setError(null);
                     
+                    //**Temporary fix -- see TODO**/
                     window.location.reload(false);
                       
                     //TODO: use context API to refresh the employee listing or somehow pass the getEmployees() method through props?
