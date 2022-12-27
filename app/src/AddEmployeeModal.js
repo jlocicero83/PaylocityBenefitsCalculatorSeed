@@ -2,11 +2,12 @@ import { useState } from "react";
 import { baseUrl } from "./Constants";
 
 const AddEmployeeModal = (props) => { 
-    const [inputs, setInputs] = useState({});
-    //const [error, setError] = useState(null);
+    const [newEmployee, setInputs] = useState({});
+    // eslint-disable-next-line no-unused-vars
+    const [error, setError] = useState(null);
+    
 
-//encountering cors errors. Been researching some fixes re: headers but nothing has worked yet. 
-//HeaderDisallowedByPreflightResponse
+
 async function addEmployee(url, newEmployee) {
     const response = await fetch(url, {
       method: 'POST', 
@@ -14,7 +15,7 @@ async function addEmployee(url, newEmployee) {
         "access-control-allow-origin" : "*",
         "Content-type": "application/json; charset=UTF-8"
       },
-       body: JSON.stringify(newEmployee) 
+       body: JSON.stringify(newEmployee),
     });
     return await response.json(); 
   }
@@ -27,13 +28,23 @@ async function addEmployee(url, newEmployee) {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        addEmployee(`${baseUrl}/api/v1/employees`, inputs)
-            .then((response) => { console.log(response); }) 
+        addEmployee(`${baseUrl}/api/v1/employees`, newEmployee)
+            .then((response) => {
+                if(response.success){
+                    setError(null);
+                    
+                    window.location.reload(false);
+                      
+                    //TODO: use context API to refresh the employee listing or somehow pass the getEmployees() method through props?
+                    //New employee is only showing after refreshing the page. 
+                    
+                }
+            }) 
             .catch((error) => { 
-                console.error(error); 
+                setError(error);
                 alert(error);
             });
-       
+            
     }
 
     return (
@@ -55,7 +66,7 @@ async function addEmployee(url, newEmployee) {
                                     className="form-control" 
                                     type="text" 
                                     name="firstName" 
-                                    value={inputs.firstName || ""} 
+                                    value={newEmployee.firstName || ""} 
                                     onChange={handleChange}
                                 />
                             </div>
@@ -65,7 +76,7 @@ async function addEmployee(url, newEmployee) {
                                     className="form-control" 
                                     type="text" 
                                     name="lastName" 
-                                    value={inputs.lastName || ""} 
+                                    value={newEmployee.lastName || ""} 
                                     onChange={handleChange}
                                 />            
                             </div>
@@ -75,7 +86,7 @@ async function addEmployee(url, newEmployee) {
                                     className="form-control" 
                                     type="number" 
                                     name="salary" 
-                                    value={inputs.salary || ""} 
+                                    value={newEmployee.salary || ""} 
                                     onChange={handleChange}
                                 />
                             </div>
@@ -85,7 +96,7 @@ async function addEmployee(url, newEmployee) {
                                     className="form-control" 
                                     type="date" 
                                     name="dateOfBirth" 
-                                    value={inputs.dateOfBirth || ""} 
+                                    value={newEmployee.dateOfBirth || ""} 
                                     onChange={handleChange}
                                 />            
                             </div>
@@ -93,7 +104,7 @@ async function addEmployee(url, newEmployee) {
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" className="btn btn-primary" onClick={handleSubmit}>Save changes</button>
+                        <button type="button" className="btn btn-primary" onClick={handleSubmit} data-bs-dismiss="modal">Save changes</button>
                     </div>
                 </div>
             </div>
